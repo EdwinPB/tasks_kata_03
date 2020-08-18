@@ -27,13 +27,13 @@ func TaskList(c buffalo.Context) error {
 
 // TaskCompletedList default implementation.
 func TaskCompletedList(c buffalo.Context) error {
-	taskCompleted := models.TaskStorage{}
+	tasksCompleted := models.TaskStorage{}
 	for _, task := range taskStorage {
 		if task.Completed {
-			taskCompleted = append(taskCompleted, task)
+			tasksCompleted = append(tasksCompleted, task)
 		}
 	}
-	return c.Render(http.StatusOK, r.JSON(taskCompleted))
+	return c.Render(http.StatusOK, r.JSON(tasksCompleted))
 }
 
 // TaskNotCompletedList default implementation.
@@ -65,4 +65,30 @@ func TaskCompletedRangeList(c buffalo.Context) error {
 		}
 	}
 	return c.Render(http.StatusOK, r.JSON(taskCompleted))
+}
+
+// TaskCompletedByList default implementation.
+func TaskCompletedByList(c buffalo.Context) error {
+	tasksCompleted := models.TaskStorage{}
+	person := c.Param("person")
+
+	for _, task := range taskStorage {
+		if task.Completed && task.ExecutorName == person {
+			tasksCompleted = append(tasksCompleted, task)
+		}
+	}
+	return c.Render(http.StatusOK, r.JSON(tasksCompleted))
+}
+
+// TaskRequestedByList default implementation.
+func TaskRequestedByList(c buffalo.Context) error {
+	tasksRequested := models.TaskStorage{}
+	person := c.Param("person")
+
+	for _, task := range taskStorage {
+		if task.RequesterName == person {
+			tasksRequested = append(tasksRequested, task)
+		}
+	}
+	return c.Render(http.StatusOK, r.JSON(tasksRequested))
 }

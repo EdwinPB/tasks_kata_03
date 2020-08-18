@@ -177,3 +177,104 @@ func (as *ActionSuite) Test_Tasks_In_Range() {
 	res.Bind(&taskStorage)
 	as.Equal(0, len(taskStorage))
 }
+
+func (as *ActionSuite) Test_Tasks_Completed_By_Person() {
+	taskStorage = models.TaskStorage{}
+	task := models.Task{
+		ID:             uuid.Must(uuid.NewV4()),
+		Completed:      true,
+		CompletionDate: time.Now(),
+		ExecutorName:   "Edwin",
+		RequesterName:  "Larry",
+		Description:    "Task activity",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+	res := as.JSON("/task/create").Post(task)
+	task = models.Task{
+		ID:             uuid.Must(uuid.NewV4()),
+		Completed:      true,
+		CompletionDate: time.Now(),
+		ExecutorName:   "Edwin",
+		RequesterName:  "Larry",
+		Description:    "Another Task activity",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+	res = as.JSON("/task/create").Post(task)
+
+	task = models.Task{
+		ID:             uuid.Must(uuid.NewV4()),
+		Completed:      true,
+		CompletionDate: time.Now(),
+		ExecutorName:   "Rodo",
+		RequesterName:  "Larry",
+		Description:    "Another Task activity",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+	res = as.JSON("/task/create").Post(task)
+
+	taskStorage := models.TaskStorage{}
+	res = as.JSON("/task/list/completed/by/%v", "Edwin").Get()
+	res.Bind(&taskStorage)
+	as.Equal(2, len(taskStorage))
+
+	res = as.JSON("/task/list/completed/by/%v", "Rodo").Get()
+	res.Bind(&taskStorage)
+	as.Equal(1, len(taskStorage))
+
+	res = as.JSON("/task/list/completed/by/%v", "Larry").Get()
+	res.Bind(&taskStorage)
+	as.Equal(0, len(taskStorage))
+}
+
+func (as *ActionSuite) Test_Tasks_Requested_By_Person() {
+	taskStorage = models.TaskStorage{}
+	task := models.Task{
+		ID:            uuid.Must(uuid.NewV4()),
+		Completed:     true,
+		ExecutorName:  "Edwin",
+		RequesterName: "Larry",
+		Description:   "Task activity",
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+	}
+	res := as.JSON("/task/create").Post(task)
+	task = models.Task{
+		ID:             uuid.Must(uuid.NewV4()),
+		Completed:      true,
+		CompletionDate: time.Now(),
+		ExecutorName:   "Edwin",
+		RequesterName:  "Tony",
+		Description:    "Another Task activity",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+	res = as.JSON("/task/create").Post(task)
+
+	task = models.Task{
+		ID:             uuid.Must(uuid.NewV4()),
+		Completed:      true,
+		CompletionDate: time.Now(),
+		ExecutorName:   "Rodo",
+		RequesterName:  "Larry",
+		Description:    "Another Task activity",
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+	res = as.JSON("/task/create").Post(task)
+
+	taskStorage := models.TaskStorage{}
+	res = as.JSON("/task/list/requested/by/%v", "Edwin").Get()
+	res.Bind(&taskStorage)
+	as.Equal(0, len(taskStorage))
+
+	res = as.JSON("/task/list/requested/by/%v", "Tony").Get()
+	res.Bind(&taskStorage)
+	as.Equal(1, len(taskStorage))
+
+	res = as.JSON("/task/list/requested/by/%v", "Larry").Get()
+	res.Bind(&taskStorage)
+	as.Equal(2, len(taskStorage))
+}

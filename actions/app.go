@@ -64,6 +64,8 @@ func App() *buffalo.App {
 		app.GET("/task/list/completed", TaskCompletedList)
 		app.GET("/task/list/not-completed", TaskNotCompletedList)
 		app.GET("/task/list/completed/range/{from}-{to}", TaskCompletedRangeList)
+		app.GET("/task/list/completed/by/{person}", TaskCompletedByList)
+		app.GET("/task/list/requested/by/{person}", TaskRequestedByList)
 	}
 
 	return app

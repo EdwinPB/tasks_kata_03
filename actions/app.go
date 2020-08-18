@@ -61,6 +61,7 @@ func App() *buffalo.App {
 		app.GET("/", HomeHandler)
 		app.GET("/task/list", TaskList)
 		app.POST("/task/create", TaskCreate)
+		app.GET("/task/list/completed", TaskCompletedList)
 	}
 
 	return app

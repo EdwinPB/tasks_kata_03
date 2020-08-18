@@ -23,3 +23,14 @@ func TaskCreate(c buffalo.Context) error {
 func TaskList(c buffalo.Context) error {
 	return c.Render(http.StatusOK, r.JSON(taskStorage))
 }
+
+// TaskCompletedList default implementation.
+func TaskCompletedList(c buffalo.Context) error {
+	taskCompleted := models.TaskStorage{}
+	for _, task := range taskStorage {
+		if task.Completed {
+			taskCompleted = append(taskCompleted, task)
+		}
+	}
+	return c.Render(http.StatusOK, r.JSON(taskCompleted))
+}

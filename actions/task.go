@@ -7,14 +7,7 @@ import (
 	"github.com/gobuffalo/buffalo"
 )
 
-var taskCalled string
 var taskStorage models.TaskStorage
-
-// TaskList default implementation.
-func TaskList(c buffalo.Context) error {
-	taskCalled = "Called"
-	return c.Render(http.StatusOK, r.JSON(taskCalled))
-}
 
 // TaskCreate default implementation.
 func TaskCreate(c buffalo.Context) error {
@@ -24,4 +17,9 @@ func TaskCreate(c buffalo.Context) error {
 	}
 	taskStorage.Add(t)
 	return c.Render(http.StatusCreated, r.JSON(t))
+}
+
+// TaskList default implementation.
+func TaskList(c buffalo.Context) error {
+	return c.Render(http.StatusOK, r.JSON(taskStorage))
 }

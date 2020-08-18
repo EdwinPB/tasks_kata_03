@@ -34,3 +34,14 @@ func TaskCompletedList(c buffalo.Context) error {
 	}
 	return c.Render(http.StatusOK, r.JSON(taskCompleted))
 }
+
+// TaskNotCompletedList default implementation.
+func TaskNotCompletedList(c buffalo.Context) error {
+	taskNotCompleted := models.TaskStorage{}
+	for _, task := range taskStorage {
+		if !task.Completed {
+			taskNotCompleted = append(taskNotCompleted, task)
+		}
+	}
+	return c.Render(http.StatusOK, r.JSON(taskNotCompleted))
+}

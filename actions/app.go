@@ -59,6 +59,8 @@ func App() *buffalo.App {
 		app.Use(popmw.Transaction(models.DB))
 
 		app.GET("/", HomeHandler)
+		app.GET("/task/list", TaskList)
+		app.POST("/task/create", TaskCreate)
 	}
 
 	return app

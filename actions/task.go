@@ -2,6 +2,7 @@ package actions
 
 import (
 	"net/http"
+	"strconv"
 	"tasks_kata_03/models"
 
 	"github.com/gobuffalo/buffalo"
@@ -44,4 +45,24 @@ func TaskNotCompletedList(c buffalo.Context) error {
 		}
 	}
 	return c.Render(http.StatusOK, r.JSON(taskNotCompleted))
+}
+
+// TaskCompletedRangeList default implementation.
+func TaskCompletedRangeList(c buffalo.Context) error {
+	taskCompleted := models.TaskStorage{}
+	from, err := strconv.Atoi(c.Param("from"))
+	if err != nil {
+		return err
+	}
+	to, err := strconv.Atoi(c.Param("to"))
+	if err != nil {
+		return err
+	}
+
+	for _, task := range taskStorage {
+		if task.Completed && task.CompletionDate.Hour() >= from && task.CompletionDate.Hour() <= to {
+			taskCompleted = append(taskCompleted, task)
+		}
+	}
+	return c.Render(http.StatusOK, r.JSON(taskCompleted))
 }
